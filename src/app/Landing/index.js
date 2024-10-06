@@ -83,21 +83,21 @@ export default function Landing() {
         // Mobile settings
         setParticleSettings({
           count: 80,
-          speed: 1,
+          speed: 0.5,
           size: { min: 1, max: 2 },
         });
       } else if (width <= 1024) {
         // Tablet settings
         setParticleSettings({
           count: 100,
-          speed: 1.5,
+          speed: 1,
           size: { min: 1, max: 3 },
         });
       } else {
         // Desktop settings
         setParticleSettings({
           count: 180,
-          speed: 2,
+          speed: 1,
           size: { min: 1, max: 4 },
         });
       }
