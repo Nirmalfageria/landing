@@ -1,0 +1,33 @@
+:root {
+  --background: #000;
+  --foreground: #f7f3f3;
+  margin: 0;
+  padding: 0;
+  --font-plus-jakarta-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-Kode-Mono: 'Kode Mono', monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --background: #0a0a0a; */
+    /* --foreground: #000000; */
+    margin: 0;
+    padding: 0;
+  }
+}
+
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  /* background-image: url("https://assets.codepen.io/1149983/mountain-lines.svg");
+  background-size: cover;
+  /* opacity: 0.4; */
+  /* background-position: center;
+  background-repeat: no-repeat;  */ 
+}
