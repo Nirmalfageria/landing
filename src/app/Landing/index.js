@@ -11,6 +11,7 @@ export default function Landing() {
   const tathvaTextRef = useRef(null);
   const comingSoonTextRef = useRef(null);
   const [init, setInit] = useState(false);
+  const [particleCount, setParticleCount] = useState(200);
 
   useEffect(() => {
     // Initialize Particle.js engine
@@ -71,6 +72,27 @@ export default function Landing() {
       },
       "+=0.0"
     );
+
+    // Update particle count based on screen width for responsiveness
+    const updateParticleCount = () => {
+      if (window.innerWidth <= 768) {
+        setParticleCount(80); // Fewer particles for mobile screens
+      } else if (window.innerWidth <= 1024) {
+        setParticleCount(150); // Moderate particles for tablet screens
+      } else {
+        setParticleCount(200); // Default number of particles for larger screens
+      }
+    };
+
+    // Listen for window resize to update particle count dynamically
+    window.addEventListener('resize', updateParticleCount);
+
+    // Initial particle count setting
+    updateParticleCount();
+
+    return () => {
+      window.removeEventListener('resize', updateParticleCount);
+    };
   }, []);
 
   const options = useMemo(() => {
@@ -83,7 +105,7 @@ export default function Landing() {
       fpsLimit: 60,
       particles: {
         number: {
-          value: 200, // Number of continuously moving dots (stars)
+          value: particleCount, // Dynamic particle count based on screen size
         },
         color: {
           value: "#ffffff", // White stars
@@ -127,8 +149,8 @@ export default function Landing() {
       },
       detectRetina: true, // High-quality rendering for Retina screens
     };
-  }, []);
-
+  }, [particleCount]); // Depend on particleCount to update dynamically
+  
   const randomStarsOptions = useMemo(() => {
     return {
       particles: {
