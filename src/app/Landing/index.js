@@ -10,7 +10,11 @@ export default function Landing() {
   const tathvaTextRef = useRef(null);
   const comingSoonTextRef = useRef(null);
   const [init, setInit] = useState(false);
-  const [particleCount, setParticleCount] = useState(80); // Default particle count
+  const [particleSettings, setParticleSettings] = useState({
+    count: 80, // Default particle count
+    speed: 2,  // Default speed
+    size: { min: 1, max: 4 }, // Default size
+  });
 
   useEffect(() => {
     // Initialize Particle.js engine
@@ -72,24 +76,39 @@ export default function Landing() {
       "+=0.0"
     );
 
-    // Update particle count based on screen size
-    const updateParticleCount = () => {
+    // Update particle settings based on screen size
+    const updateParticleSettings = () => {
       const width = window.innerWidth;
       if (width <= 768) {
-        setParticleCount(80); // Fewer particles for mobile screens
+        // Mobile settings
+        setParticleSettings({
+          count: 80,
+          speed: 1,
+          size: { min: 1, max: 2 },
+        });
       } else if (width <= 1024) {
-        setParticleCount(120); // Moderate particles for tablet screens
+        // Tablet settings
+        setParticleSettings({
+          count: 100,
+          speed: 1.5,
+          size: { min: 1, max: 3 },
+        });
       } else {
-        setParticleCount(180); // Default number of particles for larger screens
+        // Desktop settings
+        setParticleSettings({
+          count: 180,
+          speed: 2,
+          size: { min: 1, max: 4 },
+        });
       }
     };
 
-    // Initial particle count setting and event listener
-    updateParticleCount();
-    window.addEventListener('resize', updateParticleCount);
+    // Initial settings and event listener
+    updateParticleSettings();
+    window.addEventListener("resize", updateParticleSettings);
 
     return () => {
-      window.removeEventListener('resize', updateParticleCount);
+      window.removeEventListener("resize", updateParticleSettings);
     };
   }, []);
 
@@ -97,7 +116,7 @@ export default function Landing() {
     () => ({
       background: {
         color: {
-          value: "#", // Adjust to black background to match your landing page
+          value: "#", // Adjust to black background
         },
       },
       fpsLimit: 120,
@@ -118,7 +137,7 @@ export default function Landing() {
           },
           repulse: {
             distance: 80,
-            duration: 0.8,
+            duration: 0.5,
           },
         },
       },
@@ -130,23 +149,23 @@ export default function Landing() {
           color: "#ffffff",
           distance: 150,
           enable: true,
-          opacity: 0.5,
+          opacity: 0.3,
           width: 1,
         },
         move: {
           enable: true,
-          speed: 2,
+          speed: particleSettings.speed, // Dynamic speed
         },
         number: {
-          value: particleCount, // Dynamic particle count
+          value: particleSettings.count, // Dynamic particle count
         },
         size: {
-          value: { min: 1, max: 4 },
+          value: particleSettings.size, // Dynamic size
         },
       },
       detectRetina: true,
     }),
-    [particleCount], // Depend on particleCount to update dynamically
+    [particleSettings] // Depend on particleSettings to update dynamically
   );
 
   return (
@@ -166,10 +185,9 @@ export default function Landing() {
       {/* Landing Page Content */}
       <div className={styles.landing}>
         <div className={styles.item1}>
-        <h1 ref={tathvaTextRef} className={styles.letters}>
-  Tathva&apos;24
-</h1>
-
+          <h1 ref={tathvaTextRef} className={styles.letters}>
+            Tathva&apos;24
+          </h1>
           <h2 ref={comingSoonTextRef} className={styles.letters}>
             Coming-Soon
           </h2>
