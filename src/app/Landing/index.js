@@ -1,5 +1,4 @@
 "use client";
-import useSWR from 'swr'
 import { useEffect, useMemo, useState, useRef } from "react";
 import { gsap } from "gsap";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
@@ -11,7 +10,7 @@ export default function Landing() {
   const tathvaTextRef = useRef(null);
   const comingSoonTextRef = useRef(null);
   const [init, setInit] = useState(false);
-  const [particleCount, setParticleCount] = useState(200);
+  const [particleCount, setParticleCount] = useState(80); // Default particle count
 
   useEffect(() => {
     // Initialize Particle.js engine
@@ -73,138 +72,92 @@ export default function Landing() {
       "+=0.0"
     );
 
-    // Update particle count based on screen width for responsiveness
+    // Update particle count based on screen size
     const updateParticleCount = () => {
-      if (window.innerWidth <= 768) {
+      const width = window.innerWidth;
+      if (width <= 768) {
         setParticleCount(80); // Fewer particles for mobile screens
-      } else if (window.innerWidth <= 1024) {
-        setParticleCount(150); // Moderate particles for tablet screens
+      } else if (width <= 1024) {
+        setParticleCount(120); // Moderate particles for tablet screens
       } else {
-        setParticleCount(200); // Default number of particles for larger screens
+        setParticleCount(180); // Default number of particles for larger screens
       }
     };
 
-    // Listen for window resize to update particle count dynamically
-    window.addEventListener('resize', updateParticleCount);
-
-    // Initial particle count setting
+    // Initial particle count setting and event listener
     updateParticleCount();
+    window.addEventListener('resize', updateParticleCount);
 
     return () => {
       window.removeEventListener('resize', updateParticleCount);
     };
   }, []);
 
-  const options = useMemo(() => {
-    return {
+  const options = useMemo(
+    () => ({
       background: {
         color: {
-          value: "#", // Black background to simulate space
+          value: "#", // Adjust to black background to match your landing page
         },
       },
-      fpsLimit: 60,
-      particles: {
-        number: {
-          value: particleCount, // Dynamic particle count based on screen size
-        },
-        color: {
-          value: "#ffffff", // White stars
-        },
-        shape: {
-          type: "circle", // Circular dots for stars
-        },
-        move: {
-          enable: true, // Enable movement
-          direction: "right", // Move stars horizontally to the right
-          speed: 2.5, // Speed of the moving stars
-          straight: true, // Continuous straight movement
-          outMode: "out", // Stars reappear from the left after going off-screen
-        },
-        opacity: {
-          value: 0.8, // Slightly transparent stars
-        },
-        size: {
-          value: { min: 1, max: 3 }, // Random size for the stars
-        },
-      },
+      fpsLimit: 120,
       interactivity: {
         events: {
+          onClick: {
+            enable: true,
+            mode: "push",
+          },
           onHover: {
             enable: true,
-            mode: "grab", // Grab mode on hover
-            parallax: {
-              enable: true,
-              force: 100, // Increase parallax force for a stronger effect
-            },
+            mode: "repulse",
           },
         },
         modes: {
-          grab: {
-            distance: 250, // Increase the grab distance
-            line_linked: {
-              opacity: 0.4, // Adjust the opacity of connecting lines
-            },
+          push: {
+            quantity: 4,
+          },
+          repulse: {
+            distance: 80,
+            duration: 0.8,
           },
         },
       },
-      detectRetina: true, // High-quality rendering for Retina screens
-    };
-  }, [particleCount]); // Depend on particleCount to update dynamically
-  
-  const randomStarsOptions = useMemo(() => {
-    return {
       particles: {
-        number: {
-          value: 20, // Initial count is 0, stars will randomly appear
-        },
         color: {
-          value: ["#FFD700", "#FF6347", "#00CED1", "#FF1493", "#32CD32"], // Array of predefined colors for randomly appearing stars
+          value: "#ffffff", // White particles to stand out on the black background
         },
-        shape: {
-          type: "star",
+        links: {
+          color: "#ffffff",
+          distance: 150,
+          enable: true,
+          opacity: 0.5,
+          width: 1,
         },
         move: {
-          enable: true, // Enable movement
-          direction: "right", // Move stars horizontally
-          speed: 2.5, // Faster speed for the randomly appearing stars
-          straight: false, // Move in a straight line
-          outMode: "out", // Stars disappear after moving off-screen
+          enable: true,
+          speed: 2,
         },
-        opacity: {
-          value: 1, // Opaque stars
+        number: {
+          value: particleCount, // Dynamic particle count
         },
         size: {
-          value: { min: 2, max: 4 }, // Slightly larger than the static stars
-        },
-        life: {
-          duration: {
-            sync: true,
-            value: 5, // Random stars live for 5 seconds
-          },
-          count: -1, // Only appear once
+          value: { min: 1, max: 4 },
         },
       },
-
-      detectRetina: true, // Retina support
-    };
-  }, []);
+      detectRetina: true,
+    }),
+    [particleCount], // Depend on particleCount to update dynamically
+  );
 
   return (
     <div className={styles.main}>
       {/* Particles.js background */}
       {init && (
-        <>
-          <Particles
-            id="tsparticles"
-            options={options}
-            style={{ position: "absolute", zIndex: -1 }} // Ensure particles are behind other content
-          />
-          <Particles
-            id="randomStars"
-            options={randomStarsOptions}
-            style={{ position: "absolute", zIndex: -1 }}
-          />
-        </>
+        <Particles
+          id="tsparticles"
+          options={options}
+          style={{ position: "absolute", zIndex: -1 }} // Ensure particles are behind other content
+        />
       )}
 
       {/* Navbar */}
@@ -214,9 +167,8 @@ export default function Landing() {
       <div className={styles.landing}>
         <div className={styles.item1}>
           <h1 ref={tathvaTextRef} className={styles.letters}>
-            Tathva&apos;24
+            Tathva'24
           </h1>
-
           <h2 ref={comingSoonTextRef} className={styles.letters}>
             Coming-Soon
           </h2>
